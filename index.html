@@ -61,7 +61,18 @@ const roleMap={
 };
 function tier(w){return w>=54?'S':w>=52?'A':w>=50?'B':'C'}
 function roles(h){let r=h.roles||[];let out=[];if(r.includes('Carry'))out.push('Carry');if(r.includes('Escape')||r.includes('Nuker'))out.push('Mid');if(r.includes('Durable')||r.includes('Initiator'))out.push('Offlane');if(r.includes('Support'))out.push('Support','Hard Support');return [...new Set(out)]}
-function calc(h){let picks=0,wins=0;for(let i=0;i<8;i++){let p=Number(h[`pub_pick_${i}`]||0),w=Number(h[`pub_win_${i}`]||0);picks+=p;wins+=w}return {picks,win:picks?wins/picks*100:0}}
+function calc(h) {
+  let picks = 0, wins = 0;
+  for (let i = 1; i <= 8; i++) {
+    picks += Number(h[`${i}_pick`] || 0);
+    wins += Number(h[`${i}_win`] || 0);
+  }
+  return {
+    picks,
+    wins,
+    win: picks ? wins / picks * 100 : 0
+  };
+}
 function render(){
  let q=document.getElementById('search').value.toLowerCase(),r=document.getElementById('role').value,s=document.getElementById('sort').value;
  let data=allHeroes.filter(h=>(h.localized_name||'').toLowerCase().includes(q)).filter(h=>r==='all'||roles(h).includes(r)).filter(h=>activeTier==='all'||tier(h.stats.win)===activeTier);
